@@ -1,7 +1,5 @@
 package io.javabrains.weaponservice.model;
 
-import java.util.UUID;
-
 import org.springframework.data.annotation.Id;
 import org.springframework.data.cassandra.core.cql.PrimaryKeyType;
 import org.springframework.data.cassandra.core.mapping.CassandraType;
@@ -16,7 +14,7 @@ public class Weapon {
 
     @Id 
     @PrimaryKeyColumn(name = "Id", ordinal = 0, type = PrimaryKeyType.PARTITIONED)
-    private UUID Id;
+    private Long Id;
 
     @Column("name")
     @CassandraType(type = Name.TEXT)
@@ -27,15 +25,15 @@ public class Weapon {
     private int damage;
 
     @Column("task_id")
-    private UUID task_id;
+    private Long task_id;
 
     @Column("band_id")
-    private UUID band_id;
+    private Long band_id;
 
     public Weapon() {
     }
 
-    public Weapon(UUID Id, String name, int damage, UUID task_id, UUID band_id) {
+    public Weapon(Long Id, String name, int damage, Long task_id, Long band_id) {
         this.Id = Id;
         this.name = name;
         this.damage = damage;
@@ -43,11 +41,11 @@ public class Weapon {
         this.band_id = band_id;
     }
 
-    public UUID getId() {
+    public Long getId() {
         return Id;
     }
 
-    public void setId(UUID Id) {
+    public void setId(Long Id) {
         this.Id = Id;
     }
 
@@ -67,19 +65,19 @@ public class Weapon {
         this.damage = damage;
     }
 
-    public UUID getTask_id() {
+    public Long getTask_id() {
         return task_id;
     }
 
-    public void setTask_id(UUID task_id) {
+    public void setTask_id(Long task_id) {
         this.task_id = task_id;
     }
 
-    public UUID getBand_id() {
+    public Long getBand_id() {
         return band_id;
     }
 
-    public void setBand_id(UUID band_id) {
+    public void setBand_id(Long band_id) {
         this.band_id = band_id;
     }
 

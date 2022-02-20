@@ -2,7 +2,7 @@ package io.javabrains.weaponservice.servise;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,7 +23,17 @@ public class WeaponServiceImpl implements WeaponService{
     
     public Weapon create(Weapon weapon)
     {
-      return weaponRepository.save(new Weapon(UUID.randomUUID(), weapon.getName(), weapon.getDamage(), UUID.randomUUID(), UUID.randomUUID()));
+      List<Weapon> listOfWeapons = weaponRepository.findAll();
+      Long num;
+      try {
+          num = listOfWeapons.stream().max((o1, o2) -> {
+              return (int) (o1.getId() - o2.getId());
+          }).get().getId();
+      } catch (NoSuchElementException e) {
+          num = 0L;
+      }
+      weapon.setId(++num);
+      return weaponRepository.save(weapon);
     }
     
     public Weapon update(Weapon weapon)
@@ -31,7 +41,7 @@ public class WeaponServiceImpl implements WeaponService{
       return weaponRepository.save(weapon);
     }
 
-    public void delete(UUID Id)
+    public void delete(Long Id)
     {
       weaponRepository.deleteById(Id);
     }

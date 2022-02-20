@@ -2,7 +2,6 @@ package io.javabrains.weaponservice.controller;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -42,7 +41,7 @@ public class WeaponController {
   }
 
   @GetMapping("/{Id}")
-  public ResponseEntity<Weapon> getWeaponById(@PathVariable("Id") UUID Id) {
+  public ResponseEntity<Weapon> getWeaponById(@PathVariable("Id") Long Id) {
     Optional<Weapon> weaponData = weaponRepository.findById(Id);
     if (weaponData.isPresent()) {
       return new ResponseEntity<>(weaponData.get(), HttpStatus.OK);
@@ -58,7 +57,7 @@ public class WeaponController {
   }
 
   @PatchMapping("/{Id}")
-  public ResponseEntity<Weapon> updateWeapon(@PathVariable("Id") UUID Id, @RequestBody Weapon weapon){
+  public ResponseEntity<Weapon> updateWeapon(@PathVariable("Id") Long Id, @RequestBody Weapon weapon){
     Optional<Weapon> weaponData = weaponRepository.findById(Id);
     if (weaponData.isPresent()) {
       Weapon _weapon = weaponData.get();
@@ -82,7 +81,7 @@ public class WeaponController {
   }
 
   @RequestMapping(value="/{Id}", method = RequestMethod.DELETE)
-  public void deleteWeapon (@PathVariable("Id") UUID Id){
+  public void deleteWeapon (@PathVariable("Id") Long Id){
     weaponService.delete(Id);
   }
 
