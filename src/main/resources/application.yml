@@ -1,0 +1,25 @@
+spring:
+  data:
+    cassandra:
+      keyspace-name: main
+      username: GmPrkHUqeZbJiuUupOpDfeuQ
+      password: xzLv,QUfNTR1PkgRZGnlu8p,Z94xeM4.SDPSRYHcra.QUum-ZAGog-zp.g-eCzMeJE,rBxjYvPJdL.uX6tRZIc_yLJR2CsG.eaQb04g-U39inPgkAXY3jj+lfCqUlYe0
+      schema-action: create-if-not-exists
+      request:
+        timeout: 10s
+      connection:
+        connect-timeout: 10s
+        init-query-timeout: 10s
+  main:
+    allow-circular-references: true
+
+datastax.astra:
+    secure-connect-bundle: D:/Internship/Apigee/WeaponService/secure-connect.zip
+
+
+astra.db:
+    id: a8de01c7-3878-419c-b073-0f4eeb113d96-1
+    region: europe-west1
+    keyspace: main
+    application.token: AstraCS:GmPrkHUqeZbJiuUupOpDfeuQ:8152c56d28825615859eb5e6b22f20b4a713b20059427236a22eb829b7851221
+
