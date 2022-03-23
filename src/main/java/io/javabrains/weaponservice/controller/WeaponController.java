@@ -1,10 +1,8 @@
 package io.javabrains.weaponservice.controller;
 
-import java.util.List;
-import java.util.Optional;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,57 +30,43 @@ public class WeaponController {
   @Autowired
   WeaponRepository weaponRepository;
 
+  Logger logger = LoggerFactory.getLogger(WeaponController.class);
+
   @RequestMapping(method = RequestMethod.GET)
-  public WeaponResponse weapons (){
-    List<Weapon> weaponList = weaponService.getAll();
-    WeaponResponse weaponResponse = new WeaponResponse();
-    weaponResponse.setWeapons(weaponList);
-    return weaponResponse;
+  public WeaponResponse weapons() {
+    return weaponService.getAllWeapons();
   }
 
   @GetMapping("/{Id}")
-  public ResponseEntity<Weapon> getWeaponById(@PathVariable("Id") Long Id) {
-    Optional<Weapon> weaponData = weaponRepository.findById(Id);
-    if (weaponData.isPresent()) {
-      return new ResponseEntity<>(weaponData.get(), HttpStatus.OK);
-    } 
-    else {
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
+  public ResponseEntity<?> getWeaponById(@PathVariable("Id") Long Id) {
+    return weaponService.getById(Id);
   }
 
   @RequestMapping(method = RequestMethod.POST)
   public Weapon addweapon (@RequestBody Weapon weapon){
+    logger.info("Saving weapon: {}", weapon);
     return weaponService.create(weapon);
   }
-
+  
   @PatchMapping("/{Id}")
-  public ResponseEntity<Weapon> updateWeapon(@PathVariable("Id") Long Id, @RequestBody Weapon weapon){
-    Optional<Weapon> weaponData = weaponRepository.findById(Id);
-    if (weaponData.isPresent()) {
-      Weapon _weapon = weaponData.get();
-      if(weapon.getName() != null) {
-        _weapon.setName(weapon.getName());
-      }
-      if(weapon.getDamage() != 0) {
-        _weapon.setDamage(weapon.getDamage());
-      }
-      if(weapon.getTask_id() != null) {
-        _weapon.setTask_id(weapon.getTask_id());
-      }
-      if(weapon.getBand_id() != null) {
-        _weapon.setBand_id(weapon.getBand_id());
-      }
-      return new ResponseEntity<>(weaponRepository.save(_weapon), HttpStatus.OK);
-    } 
-    else {
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
+  public ResponseEntity<?> updateWeapon(@PathVariable("Id") Long Id, @RequestBody Weapon weapon){
+    return weaponService.updateById(Id, weapon);
+  }
+  
+  @PatchMapping("/{Id}/addBand")
+  public ResponseEntity<Object> updateWeaponsBand(@PathVariable("Id") Long Id, @RequestBody String bandName) {
+    return weaponService.addBand(Id, bandName);
+  }
+
+  @PatchMapping("/{Id}/addTask")
+  public ResponseEntity<Object> updateWeaponsTask(@PathVariable("Id") Long Id, @RequestBody String taskName) {
+    return weaponService.addTask(Id, taskName);
   }
 
   @RequestMapping(value="/{Id}", method = RequestMethod.DELETE)
-  public void deleteWeapon (@PathVariable("Id") Long Id){
-    weaponService.delete(Id);
+  public ResponseEntity<?> deleteWeapon (@PathVariable("Id") Long Id) {
+    logger.info("Deleting the weapon with and id {}", Id);
+    return weaponService.delete(Id);
   }
 
 }
