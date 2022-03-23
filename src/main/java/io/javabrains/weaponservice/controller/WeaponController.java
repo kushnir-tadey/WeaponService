@@ -55,12 +55,12 @@ public class WeaponController {
   
   @PatchMapping("/{Id}/addBand")
   public ResponseEntity<Object> updateWeaponsBand(@PathVariable("Id") Long Id, @RequestBody String bandName) {
-    return weaponService.updateBandId(Id, bandName);
+    return weaponService.addBand(Id, bandName);
   }
 
   @PatchMapping("/{Id}/addTask")
   public ResponseEntity<Object> updateWeaponsTask(@PathVariable("Id") Long Id, @RequestBody String taskName) {
-    return weaponService.updateTaskId(Id, taskName);
+    return weaponService.addTask(Id, taskName);
   }
 
   @RequestMapping(value="/{Id}", method = RequestMethod.DELETE)

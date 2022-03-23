@@ -12,8 +12,10 @@ public interface WeaponService {
     WeaponResponse getAllWeapons();
     Weapon create(Weapon weapon);
     ResponseEntity<?> getById(Long Id);
-    ResponseEntity<Object> updateBandId(Long Id, String bandName);
-    ResponseEntity<Object> updateTaskId(Long Id, String taskName);
+    ResponseEntity<Object> addBand(Long Id, String bandName);
+    ResponseEntity<Object> addTask(Long Id, String taskName);
+    Object updateBandId(Long Id, Long bandId);
+    Object updateTaskId(Long Id, Long taskId);
     ResponseEntity<?> updateById(Long Id, Weapon weapon);
     Weapon update(Weapon weapon);
     ResponseEntity<?> delete(Long Id);

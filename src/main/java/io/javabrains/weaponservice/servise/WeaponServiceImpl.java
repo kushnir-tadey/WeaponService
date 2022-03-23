@@ -8,7 +8,6 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.HttpMethod;
@@ -100,7 +99,7 @@ public class WeaponServiceImpl implements WeaponService{
       }
     }
 
-    public ResponseEntity<Object> updateBandId(Long Id, String bandName) {
+    public ResponseEntity<Object> addBand(Long Id, String bandName) {
       Optional<Weapon> weaponData = weaponRepository.findById(Id);
       if (weaponData.isPresent()) {
         RestTemplate restTemplate = new RestTemplate();
@@ -122,7 +121,7 @@ public class WeaponServiceImpl implements WeaponService{
       }
     }
 
-    public ResponseEntity<Object> updateTaskId(Long Id, String taskName) {
+    public ResponseEntity<Object> addTask(Long Id, String taskName) {
       Optional<Weapon> weaponData = weaponRepository.findById(Id);
       if (weaponData.isPresent()) {
         RestTemplate restTemplate = new RestTemplate();
