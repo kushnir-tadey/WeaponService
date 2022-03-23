@@ -6,10 +6,10 @@ spring:
       password: xzLv,QUfNTR1PkgRZGnlu8p,Z94xeM4.SDPSRYHcra.QUum-ZAGog-zp.g-eCzMeJE,rBxjYvPJdL.uX6tRZIc_yLJR2CsG.eaQb04g-U39inPgkAXY3jj+lfCqUlYe0
       schema-action: create-if-not-exists
       request:
-        timeout: 10s
+        timeout: 59s
       connection:
-        connect-timeout: 10s
-        init-query-timeout: 10s
+        connect-timeout: 59s
+        init-query-timeout: 59s
   main:
     allow-circular-references: true
 
@@ -23,3 +23,9 @@ astra.db:
     keyspace: main
     application.token: AstraCS:GmPrkHUqeZbJiuUupOpDfeuQ:8152c56d28825615859eb5e6b22f20b4a713b20059427236a22eb829b7851221
 
+
+services:
+  band-url: https://heroku-bands.herokuapp.com/bands/
+  task-url: https://test-herokus1.herokuapp.com/tasks/
+  user-url: https://mafias-user-service-app.herokuapp.com/api/users/
+  weapon-url: https://weapon-service-v1.herokuapp.com/api/v1/weapons/
