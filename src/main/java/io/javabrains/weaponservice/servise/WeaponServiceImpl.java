@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.configurationprocessor.json.JSONException;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -108,7 +108,7 @@ public class WeaponServiceImpl implements WeaponService{
         try {
             String bandJSON = new String((response.getBody()).getBytes());
             JSONObject jsonObject = new JSONObject(bandJSON);
-            Long bandId = Long.valueOf(jsonObject.getString("id"));
+            Long bandId = jsonObject.getLong("id");
             logger.info("Adding band with id {} to the weapon...", bandId);
             return new ResponseEntity<>(updateBandId(Id, bandId), HttpStatus.OK);
         } catch (JSONException e) {
@@ -130,7 +130,7 @@ public class WeaponServiceImpl implements WeaponService{
         try {
             String taskJSON = new String((response.getBody()).getBytes());
             JSONObject jsonObject = new JSONObject(taskJSON);
-            Long taskId = Long.valueOf(jsonObject.getString("id"));
+            Long taskId = jsonObject.getLong("id");
             logger.info("Adding task with id {} to the weapon...", taskId);
             return new ResponseEntity<>(updateTaskId(Id, taskId), HttpStatus.OK);
         } catch (JSONException e) {
@@ -172,7 +172,6 @@ public class WeaponServiceImpl implements WeaponService{
       Optional<Weapon> weaponData = weaponRepository.findById(Id);
       if (weaponData.isPresent()) {
         weaponRepository.deleteById(Id);
-        // return ResponseEntity.noContent().build();
         return new ResponseEntity<String>("Weapon was deleted", HttpStatus.NO_CONTENT);
       }
       else {

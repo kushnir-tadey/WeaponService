@@ -22,7 +22,7 @@ target/
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
-# /dist/
+/dist/
 /nbdist/
 /.nb-gradle/
 build/
@@ -35,3 +35,5 @@ build/
 # ### Secure Bundle ###
 # src/main/resources/secure-connect.zip
 # src/main/resources/application.yml
+
+.history/
