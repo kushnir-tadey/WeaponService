@@ -2,6 +2,8 @@ package io.javabrains.weaponservice.servise;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.http.ResponseEntity;
 
 import io.javabrains.weaponservice.model.Weapon;
@@ -19,4 +21,7 @@ public interface WeaponService {
     ResponseEntity<?> updateById(Long Id, Weapon weapon);
     Weapon update(Weapon weapon);
     ResponseEntity<?> delete(Long Id);
+    boolean isTokenValidBoss(HttpServletRequest request);
+    boolean isTokenValidBossOrCreator(HttpServletRequest request);
+    boolean isTokenValidCreator(HttpServletRequest request);
 }

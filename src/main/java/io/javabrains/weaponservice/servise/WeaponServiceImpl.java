@@ -5,11 +5,14 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +23,7 @@ import io.javabrains.weaponservice.configurations.Links;
 import io.javabrains.weaponservice.model.Weapon;
 import io.javabrains.weaponservice.repository.WeaponRepository;
 import io.javabrains.weaponservice.weapon.WeaponResponse;
+import io.jsonwebtoken.Jwts;
 
 @Service
 public class WeaponServiceImpl implements WeaponService{
@@ -27,6 +31,9 @@ public class WeaponServiceImpl implements WeaponService{
     WeaponRepository weaponRepository;
 
     Logger logger = LoggerFactory.getLogger(WeaponServiceImpl.class);
+
+    @Value("${my.app.secret}")
+    private String jwtSecret;
 
     public List<Weapon> getAll() {
         List<Weapon> weaponList = new ArrayList<Weapon>();
@@ -177,6 +184,48 @@ public class WeaponServiceImpl implements WeaponService{
       else {
         logger.error("There is no such weapon with an id {}", Id);
         return new ResponseEntity<String>("There is no weapon with such id", HttpStatus.NOT_FOUND);
+      }
+    }
+
+    public boolean isTokenValidBoss(HttpServletRequest request){
+      try {
+          String headerAuth = request.getHeader("Authorization");
+          if (headerAuth!=null && headerAuth.startsWith("Bearer ")) {
+              String[] s = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(headerAuth.substring(7)).getBody().getSubject().split(" ");
+              return s[2].contains("ROLE_BOSS");
+          } else {
+              return false;
+          }
+      } catch (Exception e){
+          return false;
+      }
+    }
+
+    public boolean isTokenValidCreator(HttpServletRequest request){
+      try {
+          String headerAuth = request.getHeader("Authorization");
+          if (headerAuth!=null && headerAuth.startsWith("Bearer ")) {
+              String[] s = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(headerAuth.substring(7)).getBody().getSubject().split(" ");
+              return s[2].contains("ROLE_CREATOR");
+          } else {
+              return false;
+          }
+      } catch (Exception e){
+          return false;
+      }
+    }
+
+    public boolean isTokenValidBossOrCreator(HttpServletRequest request){
+      try {
+          String headerAuth = request.getHeader("Authorization");
+          if (headerAuth!=null && headerAuth.startsWith("Bearer ")) {
+              String[] s = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(headerAuth.substring(7)).getBody().getSubject().split(" ");
+              return s[2].contains("ROLE_BOSS") || s[2].contains("ROLE_CREATOR");
+          } else {
+              return false;
+          }
+      } catch (Exception e){
+          return false;
       }
     }
 }
