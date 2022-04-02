@@ -35,6 +35,15 @@ public class WeaponController {
 
   Logger logger = LoggerFactory.getLogger(WeaponController.class);
 
+  @RequestMapping(method = RequestMethod.POST)
+  public Weapon addweapon (@RequestBody Weapon weapon, HttpServletRequest request){
+    if (!weaponService.isTokenValidCreator(request)) {
+      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+    }
+    logger.info("Saving weapon: {}", weapon);
+    return weaponService.create(weapon);
+  }
+
   @RequestMapping(method = RequestMethod.GET)
   public WeaponResponse weapons(HttpServletRequest request) {
     if (!weaponService.isTokenValidBossOrCreator(request)) {
@@ -50,15 +59,6 @@ public class WeaponController {
     }
     return weaponService.getById(Id);
   }
-
-  @RequestMapping(method = RequestMethod.POST)
-  public Weapon addweapon (@RequestBody Weapon weapon, HttpServletRequest request){
-    if (!weaponService.isTokenValidBoss(request)) {
-      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-    }
-    logger.info("Saving weapon: {}", weapon);
-    return weaponService.create(weapon);
-  }
   
   @PatchMapping("/{Id}")
   public ResponseEntity<?> updateWeapon(@PathVariable("Id") Long Id, @RequestBody Weapon weapon, HttpServletRequest request) {
@@ -66,6 +66,15 @@ public class WeaponController {
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
     }
     return weaponService.updateById(Id, weapon);
+  }
+
+  @RequestMapping(value="/{Id}", method = RequestMethod.DELETE)
+  public ResponseEntity<?> deleteWeapon (@PathVariable("Id") Long Id, HttpServletRequest request) {
+    if (!weaponService.isTokenValidCreator(request)) {
+      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+    }
+    logger.info("Deleting the weapon with and id {}", Id);
+    return weaponService.delete(Id);
   }
   
   @PatchMapping("/{Id}/addBand")
@@ -82,15 +91,6 @@ public class WeaponController {
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
     }
     return weaponService.addTask(Id, taskName);
-  }
-
-  @RequestMapping(value="/{Id}", method = RequestMethod.DELETE)
-  public ResponseEntity<?> deleteWeapon (@PathVariable("Id") Long Id, HttpServletRequest request) {
-    if (!weaponService.isTokenValidCreator(request)) {
-      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-    }
-    logger.info("Deleting the weapon with and id {}", Id);
-    return weaponService.delete(Id);
   }
 
 }
