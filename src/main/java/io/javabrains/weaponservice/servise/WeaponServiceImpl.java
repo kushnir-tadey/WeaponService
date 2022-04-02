@@ -192,8 +192,10 @@ public class WeaponServiceImpl implements WeaponService{
           String headerAuth = request.getHeader("Authorization");
           if (headerAuth!=null && headerAuth.startsWith("Bearer ")) {
               String[] s = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(headerAuth.substring(7)).getBody().getSubject().split(" ");
+              logger.info("Authentification token is valid");
               return s[2].contains("ROLE_BOSS");
           } else {
+              logger.error("You provided a bad authentication token");
               return false;
           }
       } catch (Exception e){
@@ -206,8 +208,10 @@ public class WeaponServiceImpl implements WeaponService{
           String headerAuth = request.getHeader("Authorization");
           if (headerAuth!=null && headerAuth.startsWith("Bearer ")) {
               String[] s = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(headerAuth.substring(7)).getBody().getSubject().split(" ");
+              logger.info("Authentification token is valid");
               return s[2].contains("ROLE_CREATOR");
           } else {
+              logger.error("You provided a bad authentication token");
               return false;
           }
       } catch (Exception e){
@@ -220,8 +224,10 @@ public class WeaponServiceImpl implements WeaponService{
           String headerAuth = request.getHeader("Authorization");
           if (headerAuth!=null && headerAuth.startsWith("Bearer ")) {
               String[] s = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(headerAuth.substring(7)).getBody().getSubject().split(" ");
+              logger.info("Authentification token is valid");
               return s[2].contains("ROLE_BOSS") || s[2].contains("ROLE_CREATOR");
           } else {
+              logger.error("You provided a bad authentication token");
               return false;
           }
       } catch (Exception e){
