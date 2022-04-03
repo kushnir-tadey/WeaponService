@@ -66,7 +66,7 @@ public class WeaponController {
   
   @PatchMapping("/{Id}")
   public ResponseEntity<?> updateWeapon(@PathVariable("Id") Long Id, @RequestBody Weapon weapon, HttpServletRequest request) {
-    if (!weaponService.isTokenValidCreator(request)) {
+    if (!weaponService.isTokenValidBossOrCreator(request)) {
       logger.error("You provided a bad authentication token");
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You provided a bad authentication token");
     }
