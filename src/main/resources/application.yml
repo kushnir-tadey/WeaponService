@@ -34,3 +34,9 @@ services:
 my:
   app:
     secret: AndrewReshetnyakAAAAAAAAAAAAAAAAaaaaaaaAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
+
+server:
+  error:
+    include-message: ALWAYS
+    include-stacktrace: NEVER
