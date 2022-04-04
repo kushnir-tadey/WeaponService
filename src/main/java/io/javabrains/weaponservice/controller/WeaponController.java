@@ -39,7 +39,7 @@ public class WeaponController {
   public Weapon addweapon (@RequestBody Weapon weapon, HttpServletRequest request){
     if (!weaponService.isTokenValidCreator(request)) {
       logger.error("You provided a bad authentication token");
-      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You provided a bad authentication token");
     }
     logger.info("Saving weapon: {}", weapon);
     return weaponService.create(weapon);
@@ -49,7 +49,6 @@ public class WeaponController {
   public WeaponResponse weapons(HttpServletRequest request) {
     if (!weaponService.isTokenValidBossOrCreator(request)) {
       logger.error("You provided a bad authentication token");
-      // new ResponseEntity<String>("Weapon was deleted", HttpStatus.NO_CONTENT);
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You provided a bad authentication token");
     }
     return weaponService.getAllWeapons();
@@ -66,7 +65,7 @@ public class WeaponController {
   
   @PatchMapping("/{Id}")
   public ResponseEntity<?> updateWeapon(@PathVariable("Id") Long Id, @RequestBody Weapon weapon, HttpServletRequest request) {
-    if (!weaponService.isTokenValidCreator(request)) {
+    if (!weaponService.isTokenValidBossOrCreator(request)) {
       logger.error("You provided a bad authentication token");
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You provided a bad authentication token");
     }
