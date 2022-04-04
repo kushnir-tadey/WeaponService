@@ -88,7 +88,7 @@ public class WeaponController {
       logger.error("You provided a bad authentication token");
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You provided a bad authentication token");
     }
-    return weaponService.addBand(Id, bandName);
+    return weaponService.addBand(Id, bandName, request);
   }
 
   @PatchMapping("/{Id}/addTask")
@@ -97,7 +97,7 @@ public class WeaponController {
       logger.error("You provided a bad authentication token");
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You provided a bad authentication token");
     }
-    return weaponService.addTask(Id, taskName);
+    return weaponService.addTask(Id, taskName, request);
   }
 
 }
