@@ -20,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.server.ResponseStatusException;
 
 import io.javabrains.weaponservice.configurations.Links;
 import io.javabrains.weaponservice.model.Weapon;
@@ -126,7 +127,7 @@ public class WeaponServiceImpl implements WeaponService{
       }
       else {
         logger.error("There is no such weapon with an id {}", Id);
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There is no weapon with such id");
       }
     }
 
@@ -148,7 +149,7 @@ public class WeaponServiceImpl implements WeaponService{
       }
       else {
         logger.error("There is no such weapon with an id {}", Id);
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There is no weapon with such id");
       }
     }
     
@@ -164,6 +165,9 @@ public class WeaponServiceImpl implements WeaponService{
           logger.info("Weapon's band_id has been changed");
           updatedWeapon.setBand_id(bandId);
       }
+      else {
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+      }
       return weaponRepository.save(updatedWeapon);
     }
 
@@ -173,6 +177,9 @@ public class WeaponServiceImpl implements WeaponService{
       if (_weapon.isPresent()) {
           logger.info("Weapon's task_id has been changed");
           updatedWeapon.setTask_id(taskId);
+      }
+      else {
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
       }
       return weaponRepository.save(updatedWeapon);
     }
@@ -190,51 +197,69 @@ public class WeaponServiceImpl implements WeaponService{
     }
 
     public boolean isTokenValidBoss(HttpServletRequest request){
-      try {
-          String headerAuth = request.getHeader("Authorization");
-          if (headerAuth!=null && headerAuth.startsWith("Bearer ")) {
-              String[] s = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(headerAuth.substring(7)).getBody().getSubject().split(" ");
-              logger.info("Authentification token is valid");
-              return s[2].contains("ROLE_BOSS");
-          } else {
-              logger.error("You provided a bad authentication token");
-              return false;
+        String headerAuth = request.getHeader("Authorization");
+        if (headerAuth!=null && headerAuth.startsWith("Bearer ")) {
+          String[] str;
+          try {
+              str = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(headerAuth.substring(7)).getBody().getSubject().split(" ");
+          } catch (Exception e) {
+              throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
           }
-      } catch (Exception e){
-          return false;
-      }
+          if (str[2].contains("ROLE_BOSS")) {
+              logger.info("Authentification token is valid");
+              return false;
+          } else {
+              logger.error("Sorry, this method is forbidden with provided JWT token");
+              throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+          }
+        } else {
+            logger.error("Unauthorized");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
     }
 
     public boolean isTokenValidCreator(HttpServletRequest request){
-      try {
-          String headerAuth = request.getHeader("Authorization");
-          if (headerAuth!=null && headerAuth.startsWith("Bearer ")) {
-              String[] s = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(headerAuth.substring(7)).getBody().getSubject().split(" ");
-              logger.info("Authentification token is valid");
-              return s[2].contains("ROLE_CREATOR");
-          } else {
-              logger.error("You provided a bad authentication token");
-              return false;
+      String headerAuth = request.getHeader("Authorization");
+        if (headerAuth!=null && headerAuth.startsWith("Bearer ")) {
+          String[] str;
+          try {
+              str = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(headerAuth.substring(7)).getBody().getSubject().split(" ");
+          } catch (Exception e) {
+              throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
           }
-      } catch (Exception e){
-          return false;
-      }
+          if (str[2].contains("ROLE_CREATOR")) {
+              logger.info("Authentification token is valid");
+              return false;
+          } else {
+              logger.error("Sorry, this method is forbidden with provided JWT token");
+              throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+          }
+        } else {
+            logger.error("Unauthorized");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
     }
 
     public boolean isTokenValidBossOrCreator(HttpServletRequest request){
-      try {
-          String headerAuth = request.getHeader("Authorization");
-          if (headerAuth!=null && headerAuth.startsWith("Bearer ")) {
-              String[] s = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(headerAuth.substring(7)).getBody().getSubject().split(" ");
-              logger.info("Authentification token is valid");
-              return s[2].contains("ROLE_BOSS") || s[2].contains("ROLE_CREATOR");
-          } else {
-              logger.error("You provided a bad authentication token");
-              return false;
+      String headerAuth = request.getHeader("Authorization");
+        if (headerAuth!=null && headerAuth.startsWith("Bearer ")) {
+          String[] str;
+          try {
+              str = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(headerAuth.substring(7)).getBody().getSubject().split(" ");
+          } catch (Exception e) {
+              throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
           }
-      } catch (Exception e){
-          return false;
-      }
+          if (str[2].contains("ROLE_BOSS") || str[2].contains("ROLE_CREATOR")) {
+              logger.info("Authentification token is valid");
+              return false;
+          } else {
+              logger.error("Sorry, this method is forbidden with provided JWT token");
+              throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+          }
+        } else {
+            logger.error("Unauthorized");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
     }
 
     public HttpHeaders createHeaders(String jwt) {
