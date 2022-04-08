@@ -34,7 +34,7 @@ public class WeaponController {
 
   Logger logger = LoggerFactory.getLogger(WeaponController.class);
 
-  @ApiImplicitParam(name = "Authorization", value = "Access Token", required = true, paramType = "header", example = "Bearer access_token")
+  // @ApiImplicitParam(name = "Authorization", value = "Access Token", required = true, paramType = "header", example = "Bearer access_token")
   @RequestMapping(method = RequestMethod.POST)
   public Weapon addweapon (@RequestBody Weapon weapon, HttpServletRequest request){
     weaponService.isTokenValidCreator(request);
@@ -42,28 +42,28 @@ public class WeaponController {
     return weaponService.create(weapon);
   }
 
-  @ApiImplicitParam(name = "Authorization", value = "Access Token", required = true, paramType = "header", example = "Bearer access_token")
+  // @ApiImplicitParam(name = "Authorization", value = "Access Token", required = true, paramType = "header", example = "Bearer access_token")
   @RequestMapping(method = RequestMethod.GET)
   public WeaponResponse weapons(HttpServletRequest request) {
     weaponService.isTokenValidBossOrCreator(request);
     return weaponService.getAllWeapons();
   }
 
-  @ApiImplicitParam(name = "Authorization", value = "Access Token", required = true, paramType = "header", example = "Bearer access_token")
+  // @ApiImplicitParam(name = "Authorization", value = "Access Token", required = true, paramType = "header", example = "Bearer access_token")
   @GetMapping("/{Id}")
   public ResponseEntity<?> getWeaponById(@PathVariable("Id") Long Id, HttpServletRequest request) {
     weaponService.isTokenValidBossOrCreator(request);
     return weaponService.getById(Id);
   }
   
-  @ApiImplicitParam(name = "Authorization", value = "Access Token", required = true, paramType = "header", example = "Bearer access_token")
+  // @ApiImplicitParam(name = "Authorization", value = "Access Token", required = true, paramType = "header", example = "Bearer access_token")
   @PatchMapping("/{Id}")
   public ResponseEntity<?> updateWeapon(@PathVariable("Id") Long Id, @RequestBody Weapon weapon, HttpServletRequest request) {
     weaponService.isTokenValidBossOrCreator(request);
     return weaponService.updateById(Id, weapon);
   }
 
-  @ApiImplicitParam(name = "Authorization", value = "Access Token", required = true, paramType = "header", example = "Bearer access_token")
+  // @ApiImplicitParam(name = "Authorization", value = "Access Token", required = true, paramType = "header", example = "Bearer access_token")
   @RequestMapping(value="/{Id}", method = RequestMethod.DELETE)
   public ResponseEntity<?> deleteWeapon (@PathVariable("Id") Long Id, HttpServletRequest request) {
     weaponService.isTokenValidCreator(request);
@@ -71,14 +71,14 @@ public class WeaponController {
     return weaponService.delete(Id);
   }
   
-  @ApiImplicitParam(name = "Authorization", value = "Access Token", required = true, paramType = "header", example = "Bearer access_token")
+  // @ApiImplicitParam(name = "Authorization", value = "Access Token", required = true, paramType = "header", example = "Bearer access_token")
   @PatchMapping("/{Id}/addBand")
   public ResponseEntity<Object> updateWeaponsBand(@PathVariable("Id") Long Id, @RequestBody String bandName, HttpServletRequest request) {
     weaponService.isTokenValidBoss(request);
     return weaponService.addBand(Id, bandName, request);
   }
 
-  @ApiImplicitParam(name = "Authorization", value = "Access Token", required = true, paramType = "header", example = "Bearer access_token")
+  // @ApiImplicitParam(name = "Authorization", value = "Access Token", required = true, paramType = "header", example = "Bearer access_token")
   @PatchMapping("/{Id}/addTask")
   public ResponseEntity<Object> updateWeaponsTask(@PathVariable("Id") Long Id, @RequestBody String taskName, HttpServletRequest request) {
     weaponService.isTokenValidBoss(request);
