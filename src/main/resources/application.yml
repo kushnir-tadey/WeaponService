@@ -12,6 +12,9 @@ spring:
         init-query-timeout: 59s
   main:
     allow-circular-references: true
+  mvc:
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER
 
 datastax.astra:
     secure-connect-bundle: ./secure-connect.zip
