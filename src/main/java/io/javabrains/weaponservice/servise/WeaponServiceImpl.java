@@ -19,6 +19,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -110,46 +111,56 @@ public class WeaponServiceImpl implements WeaponService{
     }
 
     public ResponseEntity<Object> addBand(Long Id, String bandName, HttpServletRequest request) {
-      Optional<Weapon> weaponData = weaponRepository.findById(Id);
-      if (weaponData.isPresent()) {
-        RestTemplate restTemplate = new RestTemplate();
-        String fullUrl = Links.getBandUrl() + "?bandName=" + bandName;
-        ResponseEntity<String> response = restTemplate.exchange(fullUrl, HttpMethod.GET, new HttpEntity<>(createHeaders(request.getHeader("Authorization"))), String.class);
-        try {
-            String bandJSON = new String((response.getBody()).getBytes());
-            JSONObject jsonObject = new JSONObject(bandJSON);
-            Long bandId = jsonObject.getLong("id");
-            logger.info("Adding band with id {} to the weapon...", bandId);
-            return new ResponseEntity<>(updateBandId(Id, bandId), HttpStatus.OK);
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
+      try {
+        Optional<Weapon> weaponData = weaponRepository.findById(Id);
+        if (weaponData.isPresent()) {
+          RestTemplate restTemplate = new RestTemplate();
+          String fullUrl = Links.getBandUrl() + "?bandName=" + bandName;
+          ResponseEntity<String> response = restTemplate.exchange(fullUrl, HttpMethod.GET, new HttpEntity<>(createHeaders(request.getHeader("Authorization"))), String.class);
+          try {
+              String bandJSON = new String((response.getBody()).getBytes());
+              JSONObject jsonObject = new JSONObject(bandJSON);
+              Long bandId = jsonObject.getLong("id");
+              logger.info("Adding band with id {} to the weapon...", bandId);
+              return new ResponseEntity<>(updateBandId(Id, bandId), HttpStatus.OK);
+          } catch (JSONException e) {
+              throw new RuntimeException(e);
+          }
+        }
+        else {
+          logger.error("There is no such weapon with an id {}", Id);
+          throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There is no weapon with such id");
         }
       }
-      else {
-        logger.error("There is no such weapon with an id {}", Id);
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There is no weapon with such id");
+      catch (HttpClientErrorException e){
+        throw new ResponseStatusException(e.getStatusCode());
       }
     }
 
     public ResponseEntity<Object> addTask(Long Id, String taskName, HttpServletRequest request) {
-      Optional<Weapon> weaponData = weaponRepository.findById(Id);
-      if (weaponData.isPresent()) {
-        RestTemplate restTemplate = new RestTemplate();
-        String fullUrl = Links.getTaskUrl() + "?taskName=" + taskName;
-        ResponseEntity<String> response = restTemplate.exchange(fullUrl, HttpMethod.GET, new HttpEntity<>(createHeaders(request.getHeader("Authorization"))), String.class);
-        try {
-            String taskJSON = new String((response.getBody()).getBytes());
-            JSONObject jsonObject = new JSONObject(taskJSON);
-            Long taskId = jsonObject.getLong("id");
-            logger.info("Adding task with id {} to the weapon...", taskId);
-            return new ResponseEntity<>(updateTaskId(Id, taskId), HttpStatus.OK);
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
+      try {
+        Optional<Weapon> weaponData = weaponRepository.findById(Id);
+        if (weaponData.isPresent()) {
+          RestTemplate restTemplate = new RestTemplate();
+          String fullUrl = Links.getTaskUrl() + "?taskName=" + taskName;
+          ResponseEntity<String> response = restTemplate.exchange(fullUrl, HttpMethod.GET, new HttpEntity<>(createHeaders(request.getHeader("Authorization"))), String.class);
+          try {
+              String taskJSON = new String((response.getBody()).getBytes());
+              JSONObject jsonObject = new JSONObject(taskJSON);
+              Long taskId = jsonObject.getLong("id");
+              logger.info("Adding task with id {} to the weapon...", taskId);
+              return new ResponseEntity<>(updateTaskId(Id, taskId), HttpStatus.OK);
+          } catch (JSONException e) {
+              throw new RuntimeException(e);
+          }
+        }
+        else {
+          logger.error("There is no such weapon with an id {}", Id);
+          throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There is no weapon with such id");
         }
       }
-      else {
-        logger.error("There is no such weapon with an id {}", Id);
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There is no weapon with such id");
+      catch (HttpClientErrorException e){
+        throw new ResponseStatusException(e.getStatusCode());
       }
     }
     
@@ -203,18 +214,18 @@ public class WeaponServiceImpl implements WeaponService{
           try {
               str = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(headerAuth.substring(7)).getBody().getSubject().split(" ");
           } catch (Exception e) {
-              throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+              throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Authorization information is missing or invalid");
           }
           if (str[2].contains("ROLE_BOSS")) {
               logger.info("Authentification token is valid");
               return false;
           } else {
               logger.error("Sorry, this method is forbidden with provided JWT token");
-              throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+              throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Sorry, you don't have right authorities");
           }
         } else {
             logger.error("Unauthorized");
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Authorization information is missing or invalid");
         }
     }
 
@@ -225,18 +236,18 @@ public class WeaponServiceImpl implements WeaponService{
           try {
               str = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(headerAuth.substring(7)).getBody().getSubject().split(" ");
           } catch (Exception e) {
-              throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+              throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Authorization information is missing or invalid");
           }
           if (str[2].contains("ROLE_CREATOR")) {
               logger.info("Authentification token is valid");
               return false;
           } else {
               logger.error("Sorry, this method is forbidden with provided JWT token");
-              throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+              throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Sorry, you don't have right authorities");
           }
         } else {
             logger.error("Unauthorized");
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Authorization information is missing or invalid");
         }
     }
 
@@ -247,18 +258,18 @@ public class WeaponServiceImpl implements WeaponService{
           try {
               str = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(headerAuth.substring(7)).getBody().getSubject().split(" ");
           } catch (Exception e) {
-              throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+              throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Authorization information is missing or invalid");
           }
           if (str[2].contains("ROLE_BOSS") || str[2].contains("ROLE_CREATOR")) {
               logger.info("Authentification token is valid");
               return false;
           } else {
               logger.error("Sorry, this method is forbidden with provided JWT token");
-              throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+              throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Sorry, you don't have right authorities");
           }
         } else {
             logger.error("Unauthorized");
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Authorization information is missing or invalid");
         }
     }
 
