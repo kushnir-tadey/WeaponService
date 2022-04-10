@@ -93,13 +93,13 @@ public class WeaponServiceImpl implements WeaponService{
           logger.info("Changing the damage for the weapon with id {}", Id);
           _weapon.setDamage(weapon.getDamage());
         }
-        if(weapon.getTask_id() != null) {
+        if(weapon.getTaskId() != null) {
           logger.info("Changing the task_id for the weapon with id {}", Id);
-          _weapon.setTask_id(weapon.getTask_id());
+          _weapon.setTaskId(weapon.getTaskId());
         }
-        if(weapon.getBand_id() != null) {
+        if(weapon.getBandId() != null) {
           logger.info("Changing the band_id for the weapon with id {}", Id);
-          _weapon.setBand_id(weapon.getBand_id());
+          _weapon.setBandId(weapon.getBandId());
         }
         logger.info("Updated weapon: {}", _weapon);
         return new ResponseEntity<>(weaponRepository.save(_weapon), HttpStatus.OK);
@@ -174,7 +174,7 @@ public class WeaponServiceImpl implements WeaponService{
       Weapon updatedWeapon = _weapon.get();
       if (_weapon.isPresent()) {
           logger.info("Weapon's band_id has been changed");
-          updatedWeapon.setBand_id(bandId);
+          updatedWeapon.setBandId(bandId);
       }
       else {
         throw new ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -187,7 +187,7 @@ public class WeaponServiceImpl implements WeaponService{
       Weapon updatedWeapon = _weapon.get();
       if (_weapon.isPresent()) {
           logger.info("Weapon's task_id has been changed");
-          updatedWeapon.setTask_id(taskId);
+          updatedWeapon.setTaskId(taskId);
       }
       else {
         throw new ResponseStatusException(HttpStatus.NOT_FOUND);
