@@ -24,21 +24,21 @@ public class Weapon {
     @CassandraType(type = Name.INT)
     private int damage;
 
-    @Column("task_id")
-    private Long task_id;
+    @Column("taskId")
+    private Long taskId;
 
-    @Column("band_id")
-    private Long band_id;
+    @Column("bandId")
+    private Long bandId;
 
     public Weapon() {
     }
 
-    public Weapon(Long Id, String name, int damage, Long task_id, Long band_id) {
+    public Weapon(Long Id, String name, int damage, Long taskId, Long bandId) {
         this.Id = Id;
         this.name = name;
         this.damage = damage;
-        this.task_id = task_id;
-        this.band_id = band_id;
+        this.taskId = taskId;
+        this.bandId = bandId;
     }
 
     public Long getId() {
@@ -65,25 +65,25 @@ public class Weapon {
         this.damage = damage;
     }
 
-    public Long getTask_id() {
-        return task_id;
+    public Long getTaskId() {
+        return taskId;
     }
 
-    public void setTask_id(Long task_id) {
-        this.task_id = task_id;
+    public void setTaskId(Long taskId) {
+        this.taskId = taskId;
     }
 
-    public Long getBand_id() {
-        return band_id;
+    public Long getBandId() {
+        return bandId;
     }
 
-    public void setBand_id(Long band_id) {
-        this.band_id = band_id;
+    public void setBandId(Long bandId) {
+        this.bandId = bandId;
     }
 
     @Override
     public String toString() {
-        return "Weapon [Id=" + Id + ", name=" + name + ", damage=" + damage + ", task_id=" + task_id + ", band_id=" + band_id + "]";
+        return "Id = " + Id + ", name = " + name + ", damage = " + damage + ", taskId = " + taskId + ", bandId = " + bandId;
     }
 
 }
