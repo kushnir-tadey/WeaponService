@@ -119,11 +119,16 @@ public class WeaponServiceImpl implements WeaponService{
           ResponseEntity<String> response = restTemplate.exchange(fullUrl, HttpMethod.GET, new HttpEntity<>(createHeaders(request.getHeader("Authorization"))), String.class);
           try {
               String bandJSON = new String((response.getBody()).getBytes());
+              if (bandJSON.equals("[]")) {
+                logger.error("Specified bandName is incorrect");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Specified bandName is incorrect");
+              }
               JSONObject jsonObject = new JSONObject(bandJSON);
               Long bandId = jsonObject.getLong("id");
               logger.info("Adding band with id {} to the weapon...", bandId);
               return new ResponseEntity<>(updateBandId(Id, bandId), HttpStatus.OK);
           } catch (JSONException e) {
+              logger.error("Error has occured: {}", e);
               throw new RuntimeException(e);
           }
         }
@@ -133,6 +138,7 @@ public class WeaponServiceImpl implements WeaponService{
         }
       }
       catch (HttpClientErrorException e){
+        logger.error("Client error has occured: {}", e);
         throw new ResponseStatusException(e.getStatusCode());
       }
     }
@@ -146,11 +152,16 @@ public class WeaponServiceImpl implements WeaponService{
           ResponseEntity<String> response = restTemplate.exchange(fullUrl, HttpMethod.GET, new HttpEntity<>(createHeaders(request.getHeader("Authorization"))), String.class);
           try {
               String taskJSON = new String((response.getBody()).getBytes());
+              if (taskJSON.equals("[]")) {
+                logger.error("Specified taskName is incorrect");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Specified taskName is incorrect");
+              }
               JSONObject jsonObject = new JSONObject(taskJSON);
               Long taskId = jsonObject.getLong("id");
               logger.info("Adding task with id {} to the weapon...", taskId);
               return new ResponseEntity<>(updateTaskId(Id, taskId), HttpStatus.OK);
           } catch (JSONException e) {
+              logger.error("Error has occured: {}", e);
               throw new RuntimeException(e);
           }
         }
@@ -160,6 +171,7 @@ public class WeaponServiceImpl implements WeaponService{
         }
       }
       catch (HttpClientErrorException e){
+        logger.error("Client error has occured: {}", e);
         throw new ResponseStatusException(e.getStatusCode());
       }
     }
