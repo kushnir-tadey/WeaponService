@@ -1,5 +1,8 @@
 package io.javabrains.weaponservice.servise;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -56,6 +59,32 @@ public class WeaponServiceImpl implements WeaponService{
     public Weapon create(Weapon weapon)
     {
       List<Weapon> listOfWeapons = weaponRepository.findAll();
+
+      if(weapon.getName() == null) {
+        logger.error("You haven't specified a name for the weapon");
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You haven't specified a name for the weapon");
+      }
+
+      if(weaponRepository.findByName(weapon.getName()) != null) {
+        logger.error("Weapon with such name already exists");
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Weapon with such name already exists");
+      }
+
+      if(weapon.getDamage() < 0) {
+        logger.error("Damage has to be >= 0");
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Damage has to be >= 0");
+      }
+
+      if(weapon.getBandId() < 1) {
+        logger.error("You specified an invalid bandId");
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You specified an invalid bandId");
+      }
+
+      if(weapon.getTaskId() < 0) {
+        logger.error("You specified an invalid taskId");
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You specified an invalid taskId");
+      }
+
       Long num;
       try {
           num = listOfWeapons.stream().max((o1, o2) -> {
@@ -67,6 +96,7 @@ public class WeaponServiceImpl implements WeaponService{
       weapon.setId(++num);
       return weaponRepository.save(weapon);
     }
+
 
     public ResponseEntity<?> getById(Long Id) {
       Optional<Weapon> weaponData = weaponRepository.findById(Id);
@@ -87,18 +117,38 @@ public class WeaponServiceImpl implements WeaponService{
         Weapon _weapon = weaponData.get();
         if(weapon.getName() != null) {
           logger.info("Changing the name for the weapon with id {}", Id);
+          if(weapon.getName().equals("")) {
+            logger.error("You haven't specified a name for the weapon");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You haven't specified a name for the weapon");
+          }
+          if(weaponRepository.findByName(weapon.getName()) != null) {
+            logger.error("Weapon with such name already exists");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Weapon with such name already exists");
+          }
           _weapon.setName(weapon.getName());
         }
         if(weapon.getDamage() != 0) {
           logger.info("Changing the damage for the weapon with id {}", Id);
+          if(weapon.getDamage() < 0) {
+            logger.error("Damage has to be >= 0");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Damage has to be >= 0");
+          }
           _weapon.setDamage(weapon.getDamage());
         }
         if(weapon.getTaskId() != null) {
           logger.info("Changing the task_id for the weapon with id {}", Id);
+          if(weapon.getTaskId() < 0) {
+            logger.error("You specified an invalid taskId");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You specified an invalid taskId");
+          }
           _weapon.setTaskId(weapon.getTaskId());
         }
         if(weapon.getBandId() != null) {
           logger.info("Changing the band_id for the weapon with id {}", Id);
+          if(weapon.getBandId() < 1) {
+            logger.error("You specified an invalid bandId");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You specified an invalid bandId");
+          }
           _weapon.setBandId(weapon.getBandId());
         }
         logger.info("Updated weapon: {}", _weapon);
