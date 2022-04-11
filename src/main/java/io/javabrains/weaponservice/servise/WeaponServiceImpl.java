@@ -60,12 +60,12 @@ public class WeaponServiceImpl implements WeaponService{
     {
       List<Weapon> listOfWeapons = weaponRepository.findAll();
 
-      if(weapon.getName() == null) {
-        logger.error("You haven't specified a name for the weapon");
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You haven't specified a name for the weapon");
+      if(weapon.getName() == null || weapon.getName().replaceAll("\\s+","").equals("")) {
+        logger.error("You haven't specified a name for the weapon or name is invalid");
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You haven't specified a name for the weapon or name is invalid");
       }
 
-      if(weaponRepository.findByName(weapon.getName()) != null) {
+      if(weapon.getName() != null && weaponRepository.findByName(weapon.getName()) != null) {
         logger.error("Weapon with such name already exists");
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Weapon with such name already exists");
       }
@@ -75,12 +75,12 @@ public class WeaponServiceImpl implements WeaponService{
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Damage has to be >= 0");
       }
 
-      if(weapon.getBandId() < 1) {
+      if(weapon.getBandId() != null && weapon.getBandId() < 1) {
         logger.error("You specified an invalid bandId");
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You specified an invalid bandId");
       }
 
-      if(weapon.getTaskId() < 0) {
+      if(weapon.getTaskId() != null && weapon.getTaskId() < 0) {
         logger.error("You specified an invalid taskId");
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You specified an invalid taskId");
       }
@@ -117,7 +117,7 @@ public class WeaponServiceImpl implements WeaponService{
         Weapon _weapon = weaponData.get();
         if(weapon.getName() != null) {
           logger.info("Changing the name for the weapon with id {}", Id);
-          if(weapon.getName().equals("")) {
+          if(weapon.getName().replaceAll("\\s+","").equals("")) {
             logger.error("You haven't specified a name for the weapon");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You haven't specified a name for the weapon");
           }
