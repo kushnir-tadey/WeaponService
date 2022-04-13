@@ -109,6 +109,10 @@ public class WeaponServiceImpl implements WeaponService{
 
     public ResponseEntity<?> updateById(Long Id, Weapon weapon) {
       Optional<Weapon> weaponData = weaponRepository.findById(Id);
+      if(weapon.getName() == null && weapon.getDamage() == 0 && weapon.getBandId() == null && weapon.getTaskId() == null) {
+        logger.error("You haven't provided any valid data to be changed");
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You haven't provided any valid data to be changed");
+      }
       if (weaponData.isPresent()) {
         logger.info("Updating weapon with id {}", Id);
         Weapon _weapon = weaponData.get();
