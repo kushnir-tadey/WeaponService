@@ -9,12 +9,13 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>io.javabrains</groupId>
-	<artifactId>weapon-service</artifactId>
+	<artifactId>weapon-service-app</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>weapon-service</name>
-	<description>Demo project for Spring Boot</description>
+	<name>weapon-service-app</name>
+	<description>Weapon Service for Mafia project</description>
 	<properties>
 		<java.version>11</java.version>
+		<maven.deploy.skip>true</maven.deploy.skip>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -107,7 +108,6 @@
             <artifactId>jaxb-core</artifactId>
             <version>3.0.2</version>
         </dependency>
-
 		<dependency>
            <groupId>io.springfox</groupId>
            <artifactId>springfox-boot-starter</artifactId>
@@ -126,6 +126,28 @@
                 <inherited>true</inherited>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+
+			<plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>dockerfile-maven-plugin</artifactId>
+                <version>1.4.13</version>
+                <executions>
+                    <execution>
+                        <id>default</id>
+                        <goals>
+                            <goal>build</goal>
+                            <goal>push</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <repository>registry.heroku.com/${project.artifactId}/web</repository>
+                    <tag>latest</tag>
+                    <buildArgs>
+                        <JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
+                    </buildArgs>
+                </configuration>
             </plugin>
 		</plugins>
 	</build>
